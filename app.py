@@ -4,10 +4,10 @@ from dotenv import load_dotenv
 import os
 
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain.prompts import PromptTemplate
+
 from langchain.schema import HumanMessage
 
-# Load API key from .env file (for security)
+# Load API key from .env file 
 load_dotenv()
 API_KEY = os.getenv('GOOGLE_API_KEY')
 genai.configure(api_key=API_KEY)
@@ -21,12 +21,12 @@ def get_user_input():
     preferences = st.text_area("Enter your preferences (housing, transportation, etc.). You can input multiple preferences as well:")
     return city, income, preferences
 
-# Function to get cost of living estimation from Gemini Pro (modified)
+# Function to get cost of living estimation from Gemini Pro 
 def get_cost_of_living_estimation(city, income, preferences):
     prompt = f"Estimate the monthly cost of living for a student in {city}, Canada. Assuming a monthly income of ${income}, estimate the cost of preferences ${preferences}. Consider only the specified preferences and exclude other expenses such as utilities or entertainment. Conclude by analyzing whether the estimated expenses are within the user's budget based on their income."
     
     
-     # If average {preferences} value in that {city} is less than {income}, say "Not enough income".
+
     # Use the correct method for text generation
     message = HumanMessage(content=prompt)
     response = model([message])
@@ -37,13 +37,7 @@ def get_cost_of_living_estimation(city, income, preferences):
 def display_results(estimated_expenses):
     st.subheader("Estimated Monthly Expenses:")
     st.write(estimated_expenses)
-    # Additional features (recommendations, comparisons, etc.) - Add more detailed implementation here
-
-# # Streamlit App
-# st.title("Cost of Living Calculator for Students in Canada")
-
-# # Get user input
-# city, income, preferences = get_user_input()
+    
 
 def main():
 
@@ -51,7 +45,7 @@ def main():
     
     st.header("Study Smart, Live Well: The Canadian Student's Cost-of-Living Tool")
 
-    # st.header("Calculate Living cost as a Student in Canada")
+    
 
      # Get user input
     city, income, preferences = get_user_input()
