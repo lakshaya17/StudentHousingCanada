@@ -1,4 +1,4 @@
-#Study Smart, Live Well: The Canadian Student's Cost-of-Living Tool
+# Study Smart, Live Well: The Canadian Student's Cost-of-Living Tool
 
 A Streamlit-powered cost-of-living calculator designed to help students in Canada make informed decisions about where to live and study based on their budget and lifestyle preferences.
 
