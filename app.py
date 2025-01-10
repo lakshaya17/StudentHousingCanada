@@ -9,7 +9,7 @@ from langchain.schema import HumanMessage
 
 # Load API key from .env file 
 load_dotenv()
-API_KEY = os.getenv('GOOGLE_API_KEY')
+API_KEY = os.getenv('GOOGLE_API_KEY') # Enter you Google API here
 genai.configure(api_key=API_KEY)
 
 model = ChatGoogleGenerativeAI(model="gemini-pro", temperature=0.3)
