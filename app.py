@@ -1,40 +1,22 @@
 import streamlit as st
 import google.generativeai as genai
-
 from dotenv import load_dotenv
 import os
 
-from langchain_google_genai import ChatGoogleGenerativeAI
-
-from langchain.schema import HumanMessage
-
-# Load API key from .env file 
+# Load environment variables from .env file
 load_dotenv()
-API_KEY = os.getenv('GOOGLE_API_KEY') # Enter you Google API here
+API_KEY = os.getenv('GOOGLE_API_KEY')  # Your Gemini API key here
 genai.configure(api_key=API_KEY)
-
-model = ChatGoogleGenerativeAI(model="gemini-1.5-flash", temperature=0.3)
 
 # Function to get user input
 def get_user_input():
     city = st.text_input("Enter the city in Canada:")
     income = st.number_input("Enter your expected monthly income (CAD):", min_value=0)
-    preferences = st.text_area("Enter your preferences (housing, transportation, etc.). You can input multiple preferences as well:")
+    preferences = st.text_area("Enter your preferences (e.g., Housing, Transportation, Groceries):")
     return city, income, preferences
 
-# Function to get cost of living estimation from Gemini Pro 
-#def get_cost_of_living_estimation(city, income, preferences):
-#    prompt = f"Estimate the monthly cost of living for a student in {city}, Canada. Assuming a monthly income of ${income}, estimate the cost of preferences ${preferences}. Consider only the specified preferences and exclude other expenses such as utilities or entertainment. Conclude by analyzing whether the estimated expenses are within the user's budget based on their income."
-
+# Function to generate the Gemini prompt and get cost of living estimation
 def get_cost_of_living_estimation(city, income, preferences_text):
-    """
-    Generates a detailed prompt using free-form user preferences (e.g., "Housing, Transportation").
-
-    Args:
-        city (str): City in Canada.
-        income (float): Monthly income in CAD.
-        preferences_text (str): Plain text string of user preferences.
-    """
     prompt = f"""
     You are an expert student advisor for cost-of-living in Canadian cities.
 
@@ -55,40 +37,31 @@ def get_cost_of_living_estimation(city, income, preferences_text):
 
     Use bullet points or a table format for readability.
     """
-    message = HumanMessage(content=prompt)
-    response = model([message])
-    return response.content
 
-    
+    model = genai.GenerativeModel(model_name="gemini-1.5-flash")
+    response = model.generate_content(prompt)
+    return response.text
 
-
-
-# Function to display the results
+# Function to display results
 def display_results(estimated_expenses):
     st.subheader("Estimated Monthly Expenses:")
     st.write(estimated_expenses)
-    
 
+# Main app function
 def main():
-
-    
-    
     st.header("Study Smart, Live Well: The Canadian Student's Cost-of-Living Tool")
 
-    
-
-     
-     # Get user input
     city, income, preferences = get_user_input()
-    # Calculate and display results when the button is clicked
+
     if st.button("Calculate"):
         if city and income and preferences:
-                with st.spinner("Calculating..."):
-                     estimated_expenses = get_cost_of_living_estimation(city, income, preferences)
-                     display_results(estimated_expenses)
+            with st.spinner("Calculating..."):
+                estimated_expenses = get_cost_of_living_estimation(city, income, preferences)
+                display_results(estimated_expenses)
         else:
-             st.warning("Please fill in all fields.")
-    
+            st.warning("Please fill in all fields.")
+
+    # Footer
     st.markdown("""
     <style>
     .footer {
@@ -96,18 +69,20 @@ def main():
         left: 0;
         bottom: 0;
         width: 100%;
-        background-color: lightgray;  /* Adjust color if desired */
-        color: black;   /* Adjust color if desired  */
+        background-color: lightgray;
+        color: black;
         text-align: center;
+        padding: 10px;
     }
     </style>
     """, unsafe_allow_html=True)
 
     st.markdown("<div class='footer'>Created By Lakshay Arora. Powered by Google Gemini.</div>", unsafe_allow_html=True)
 
-
+# Run the app
 if __name__ == "__main__":
     main()
+
 
 
 # import streamlit as st
