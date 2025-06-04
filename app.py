@@ -22,9 +22,55 @@ def get_user_input():
     return city, income, preferences
 
 # Function to get cost of living estimation from Gemini Pro 
+#def get_cost_of_living_estimation(city, income, preferences):
+#    prompt = f"Estimate the monthly cost of living for a student in {city}, Canada. Assuming a monthly income of ${income}, estimate the cost of preferences ${preferences}. Consider only the specified preferences and exclude other expenses such as utilities or entertainment. Conclude by analyzing whether the estimated expenses are within the user's budget based on their income."
+
 def get_cost_of_living_estimation(city, income, preferences):
-    prompt = f"Estimate the monthly cost of living for a student in {city}, Canada. Assuming a monthly income of ${income}, estimate the cost of preferences ${preferences}. Consider only the specified preferences and exclude other expenses such as utilities or entertainment. Conclude by analyzing whether the estimated expenses are within the user's budget based on their income."
-    
+    """
+    Generates a detailed prompt for estimating the monthly cost of living for a student.
+
+    Args:
+        city (str): The specific city in Canada where the student will live (e.g., "Toronto, Ontario").
+        income (float): The student's estimated monthly income in Canadian dollars.
+        preferences (dict): A dictionary of specific living preferences and their estimated costs.
+                           Keys should be categories (e.g., "Rent (1-bedroom apartment)", "Groceries", "Public Transit Pass")
+                           and values should be estimated monthly costs in CAD.
+                           Example: {"Rent (shared accommodation)": 800, "Groceries": 350, "Public Transit Pass": 150}
+    """
+
+    prompt = f"""
+    Please provide a comprehensive and detailed estimation of the *monthly* cost of living for a student residing in {city}, Canada.
+
+    The student has an estimated *monthly income* of ${income:.2f} CAD.
+
+    Crucially, I need you to *focus exclusively* on the following specified preferences and their estimated costs. Please break down the expenses for each preference explicitly:
+
+    """
+
+    for preference, cost in preferences.items():
+        prompt += f"- {preference}: ${cost:.2f} CAD (User's estimated cost)\n"
+
+    prompt += f"""
+
+    **IMPORTANT:** Please *exclude* all other expenses not explicitly listed above, such as:
+    - Utilities (electricity, heating, internet, water)
+    - Entertainment and leisure activities
+    - Personal care products
+    - Clothing
+    - Health insurance or medical expenses
+    - Textbooks and academic supplies
+    - Travel outside of specified public transit
+    - Miscellaneous unforeseen expenses
+
+    Your response should clearly present:
+
+    1.  A detailed breakdown of the *total estimated monthly expenses* based *only* on the provided preferences.
+    2.  A clear and concise conclusion analyzing whether the total estimated expenses are within the student's stated monthly income of ${income:.2f} CAD.
+    3.  If the expenses exceed the income, suggest which preference categories might be adjusted to fit the budget, given the provided estimates. If they are within budget, state how much surplus remains.
+
+    Please present the information in an easy-to-read format, perhaps using bullet points or a table for the breakdown.
+    """
+    return prompt
     
 
     # Use the correct method for text generation
